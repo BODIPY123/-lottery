@@ -3,72 +3,89 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>🎰 幸运刮刮乐 & 体彩</title>
+<title>🎰 幸运刮刮乐 & 体彩 & 老虎机</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root { --gold: #ffd700; --gold-deep: #f0a500; --pink: #e0245e; }
   body {
     min-height: 100vh; display: flex; flex-direction: column; align-items: center;
-    background: radial-gradient(circle at 20% 10%, #7b2ff7, transparent 40%),
-                radial-gradient(circle at 80% 80%, #2575fc, transparent 45%),
-                linear-gradient(135deg, #3a0ca3, #240046);
     font-family: "Microsoft YaHei", sans-serif; color: #fff; padding: 20px 16px 60px; overflow-x: hidden;
+    transition: background 0.6s;
   }
+  body.theme-candy { background: radial-gradient(circle at 20% 10%, #ff9ec7, transparent 45%), radial-gradient(circle at 80% 80%, #b98cff, transparent 45%), linear-gradient(135deg,#ff7eb3,#8a5cff); }
+  body.theme-mint  { background: radial-gradient(circle at 20% 10%, #7ef0c2, transparent 45%), radial-gradient(circle at 80% 80%, #56c4ff, transparent 45%), linear-gradient(135deg,#33c9a0,#3a8fd6); }
+  body.theme-sky   { background: radial-gradient(circle at 20% 10%, #8ecbff, transparent 45%), radial-gradient(circle at 80% 80%, #ffce7e, transparent 45%), linear-gradient(135deg,#5aa8f0,#a06fe0); }
+  body.theme-night { background: radial-gradient(circle at 20% 10%, #7b2ff7, transparent 40%), radial-gradient(circle at 80% 80%, #2575fc, transparent 45%), linear-gradient(135deg,#3a0ca3,#240046); }
+  /* 戒赌宣传主题 */
+  body.theme-warn  { background: radial-gradient(circle at 30% 10%, #7a1010, transparent 45%), radial-gradient(circle at 80% 80%, #2a2a2a, transparent 45%), linear-gradient(135deg,#3a0000,#151515); }
+
+  .deco { position: fixed; inset: 0; pointer-events: none; z-index: -1; overflow: hidden; }
+  .deco span { position: absolute; opacity: 0.7; animation: floaty ease-in-out infinite; }
+  @keyframes floaty { 0%,100%{ transform: translateY(0) rotate(-8deg);} 50%{ transform: translateY(-26px) rotate(10deg);} }
+
   h1 {
-    margin: 6px 0 2px; font-size: 32px; letter-spacing: 2px;
-    background: linear-gradient(90deg, #ffe259, #ffa751, #ffe259);
+    margin: 6px 0 2px; font-size: 30px; letter-spacing: 1px; text-align:center;
+    background: linear-gradient(90deg, #fff, #ffe259, #fff);
     -webkit-background-clip: text; background-clip: text; color: transparent;
-    filter: drop-shadow(0 2px 6px rgba(255,180,0,0.5));
+    filter: drop-shadow(0 2px 6px rgba(0,0,0,0.35));
     animation: shine 3s linear infinite; background-size: 200% auto;
   }
+  body.theme-warn h1 { background: linear-gradient(90deg,#fff,#ff8a8a,#fff); -webkit-background-clip:text; background-clip:text; }
   @keyframes shine { to { background-position: 200% center; } }
-  .tip { margin-bottom: 12px; opacity: 0.85; font-size: 12.5px; text-align: center; line-height: 1.6; }
+  .tip { margin-bottom: 12px; opacity: 0.92; font-size: 12.5px; text-align: center; line-height: 1.6; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
+
+  /* 戒赌警示条 */
+  .warn-box { display:none; width:100%; max-width:560px; margin-bottom:14px; padding:12px 16px;
+    background: rgba(180,20,20,0.4); border:1px solid #ff5252; border-radius:14px; text-align:center; box-shadow:0 0 18px rgba(255,60,60,0.3); }
+  .warn-box.show { display:block; }
+  .warn-box .wt { font-size:15px; font-weight:bold; color:#ffe0e0; min-height:20px; }
+  .warn-box .ws { font-size:11.5px; opacity:0.9; margin-top:5px; line-height:1.5; }
 
   .pool {
     width: 100%; max-width: 560px; margin-bottom: 14px; padding: 12px 18px;
-    background: linear-gradient(135deg, rgba(255,215,0,0.22), rgba(255,140,0,0.18));
-    border: 1px solid rgba(255,215,0,0.5); border-radius: 16px; text-align: center;
-    box-shadow: 0 0 20px rgba(255,200,0,0.25);
+    background: linear-gradient(135deg, rgba(255,215,0,0.25), rgba(255,140,0,0.2));
+    border: 1px solid rgba(255,215,0,0.6); border-radius: 16px; text-align: center;
+    box-shadow: 0 0 20px rgba(255,200,0,0.3);
   }
-  .pool .k { font-size: 13px; color: var(--gold); letter-spacing: 1px; }
-  .pool .v { font-size: 30px; font-weight: bold; color: #fff; text-shadow: 0 0 12px rgba(255,215,0,0.7); }
-  .pool .note { font-size: 11px; opacity: 0.8; margin-top: 2px; }
-  .pool .best { font-size: 12px; color: var(--gold); margin-top: 4px; font-weight: bold; }
+  .pool .k { font-size: 13px; color: #fff; letter-spacing: 1px; text-shadow: 0 1px 2px rgba(0,0,0,0.3); }
+  .pool .v { font-size: 30px; font-weight: bold; color: #fff; text-shadow: 0 0 12px rgba(255,215,0,0.9); }
+  .pool .note { font-size: 11px; opacity: 0.92; margin-top: 2px; }
+  .pool .best { font-size: 12px; color: #fff; margin-top: 4px; font-weight: bold; text-shadow: 0 1px 3px rgba(0,0,0,0.3); }
 
   .marquee {
     width: 100%; max-width: 560px; overflow: hidden; white-space: nowrap;
-    background: rgba(0,0,0,0.25); border: 1px solid rgba(255,215,0,0.3);
-    border-radius: 20px; padding: 6px 0; margin-bottom: 16px; font-size: 13px; color: var(--gold);
+    background: rgba(0,0,0,0.25); border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px; padding: 6px 0; margin-bottom: 16px; font-size: 13px; color: #fff;
   }
   .marquee span { display: inline-block; padding-left: 100%; animation: scroll 18s linear infinite; }
   @keyframes scroll { to { transform: translateX(-100%); } }
 
   .stats { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; justify-content: center; }
   .stat {
-    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.25);
     border-radius: 14px; padding: 8px 16px; text-align: center; min-width: 92px; backdrop-filter: blur(6px);
   }
-  .stat .k { font-size: 11px; opacity: 0.75; }
+  .stat .k { font-size: 11px; opacity: 0.85; }
   .stat .v { font-size: 20px; font-weight: bold; }
-  .stat .v.money { color: var(--gold); }
+  .stat .v.money { color: #fff; text-shadow: 0 0 8px rgba(255,215,0,0.8); }
   .stat .v.up { animation: pop 0.4s; }
-  @keyframes pop { 0%{transform:scale(1);} 40%{transform:scale(1.35); color:#7CFC00;} 100%{transform:scale(1);} }
+  @keyframes pop { 0%{transform:scale(1);} 40%{transform:scale(1.35); color:#aaffaa;} 100%{transform:scale(1);} }
   .stat .v.down { animation: dpop 0.4s; }
-  @keyframes dpop { 0%{transform:scale(1);} 40%{transform:scale(1.2); color:#ff6b6b;} 100%{transform:scale(1);} }
+  @keyframes dpop { 0%{transform:scale(1);} 40%{transform:scale(1.2); color:#ffb3b3;} 100%{transform:scale(1);} }
 
-  .tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; justify-content: center; }
   .tab {
-    padding: 10px 26px; border-radius: 24px; cursor: pointer; font-weight: bold; font-size: 15px;
-    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2); transition: all 0.2s;
+    padding: 10px 22px; border-radius: 24px; cursor: pointer; font-weight: bold; font-size: 15px;
+    background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.3); transition: all 0.2s;
   }
   .tab.active { background: linear-gradient(135deg,#ffe259,#ffa751); color:#4a2500; border-color: transparent; }
   .view { display: none; flex-direction: column; align-items: center; width: 100%; }
   .view.active { display: flex; }
 
-  .shop { display: flex; gap: 14px; margin-bottom: 18px; flex-wrap: wrap; justify-content: center; }
+  .shop { display: flex; gap: 12px; margin-bottom: 18px; flex-wrap: wrap; justify-content: center; }
   .card-btn {
-    position: relative; padding: 14px 18px; border: 2px solid transparent; border-radius: 16px;
-    color: #fff; cursor: pointer; text-align: center; line-height: 1.5; min-width: 140px;
+    position: relative; padding: 13px 16px; border: 2px solid transparent; border-radius: 16px;
+    color: #fff; cursor: pointer; text-align: center; line-height: 1.5; min-width: 130px;
     transition: transform 0.15s, box-shadow 0.2s; overflow: hidden;
   }
   .card-btn::before {
@@ -77,13 +94,14 @@
     transform: skewX(-20deg); transition: left 0.5s;
   }
   .card-btn:hover:not(:disabled)::before { left: 120%; }
-  .card-btn.low  { background: linear-gradient(135deg,#cd7f32,#a0522d); }
-  .card-btn.mid  { background: linear-gradient(135deg,#c0c0c0,#8e9eab); }
-  .card-btn.high { background: linear-gradient(135deg,#ffd700,#ff8c00); color:#4a2500; }
+  .card-btn.low     { background: linear-gradient(135deg,#cd7f32,#a0522d); }
+  .card-btn.mid     { background: linear-gradient(135deg,#c0c0c0,#8e9eab); }
+  .card-btn.high    { background: linear-gradient(135deg,#ffd700,#ff8c00); color:#4a2500; }
+  .card-btn.pattern { background: linear-gradient(135deg,#ff8ac2,#b06ff0); }
   .card-btn:hover:not(:disabled) { transform: translateY(-4px) scale(1.03); box-shadow: 0 10px 24px rgba(0,0,0,0.4); }
-  .card-btn.active { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,0.4); }
+  .card-btn.active { border-color: #fff; box-shadow: 0 0 0 3px rgba(255,255,255,0.5); }
   .card-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-  .card-btn .name { font-size: 17px; font-weight: bold; }
+  .card-btn .name { font-size: 16px; font-weight: bold; }
   .card-btn .cost { font-size: 13px; font-weight: bold; }
   .card-btn .desc { font-size: 11px; opacity: 0.9; }
   .card-btn .top { font-size: 10px; margin-top: 3px; opacity: 0.85; }
@@ -94,7 +112,14 @@
     box-shadow: 0 14px 40px rgba(0,0,0,0.45); min-height: 130px;
     display: flex; align-items: center; justify-content: center;
   }
-  .card-inner { background: #fff; border-radius: 14px; display: flex; align-items: center; justify-content: center; }
+  .card-inner { background: #fff; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+
+  .target-bar { display: none; flex-direction: column; align-items: center; padding: 12px 14px 4px; }
+  .target-bar .t-label { font-size: 12px; color: #b06; font-weight: bold; }
+  .target-bar .t-icon { font-size: 42px; margin-top: 2px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)); animation: bounce 1.2s ease-in-out infinite; }
+  @keyframes bounce { 0%,100%{transform:translateY(0);} 50%{transform:translateY(-6px);} }
+  .target-bar .t-mult { font-size: 12px; color: var(--pink); font-weight: bold; }
+
   .grid { display: grid; grid-template-columns: repeat(3, 108px); gap: 8px; padding: 14px; }
   .zone {
     position: relative; height: 76px; display: flex; align-items: center; justify-content: center;
@@ -104,6 +129,7 @@
   .zone .val { font-weight: bold; color: var(--pink); font-size: 19px; z-index:1; transition: transform 0.3s; }
   .zone.win .val { animation: winpop 0.5s; }
   @keyframes winpop { 0%{transform:scale(0.3); opacity:0;} 60%{transform:scale(1.3);} 100%{transform:scale(1);} }
+  .zone.win { box-shadow: inset 0 0 0 2px #2ecc40, 0 0 10px rgba(46,204,64,0.5); }
   .zone.jackpot { background: radial-gradient(circle at 50% 40%, #fff8dc, #ffd700); animation: jpglow 0.8s infinite alternate; }
   .zone.jackpot .val { color: #b8860b; font-size: 15px; }
   @keyframes jpglow { from{box-shadow:inset 0 0 0 2px #ffd700, 0 0 6px #ffd700;} to{box-shadow:inset 0 0 0 2px #fff, 0 0 18px #ffcc00;} }
@@ -111,12 +137,25 @@
 
   .placeholder { color: #b06; font-size: 15px; text-align: center; padding: 34px 20px; font-weight:bold; }
 
+  /* 老虎机 */
+  .slot-box { width:100%; max-width:420px; background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.25); border-radius:18px; padding:22px 20px; text-align:center; }
+  .slot-box h3 { font-size:17px; margin-bottom:6px; }
+  .slot-box .sub { font-size:12px; opacity:0.9; margin-bottom:16px; line-height:1.6; }
+  .reels { display:flex; gap:10px; justify-content:center; margin-bottom:16px; padding:14px; border-radius:16px;
+    background: linear-gradient(135deg,#ffe259,#ffa751); box-shadow: inset 0 2px 10px rgba(0,0,0,0.3); }
+  .reel { width:80px; height:92px; border-radius:12px; background:linear-gradient(#fff,#eee);
+    display:flex; align-items:center; justify-content:center; font-size:46px;
+    box-shadow: inset 0 0 0 3px #ffcf3f, 0 4px 10px rgba(0,0,0,0.3); }
+  .reel.spinning { animation: reelShake 0.12s infinite; }
+  @keyframes reelShake { 0%,100%{transform:translateY(-3px);} 50%{transform:translateY(3px);} }
+  .slot-pays { font-size:11px; opacity:0.85; margin-top:6px; }
+
   .lotto-box {
-    width: 100%; max-width: 480px; background: rgba(255,255,255,0.08);
-    border: 1px solid rgba(255,255,255,0.18); border-radius: 18px; padding: 20px; text-align: center;
+    width: 100%; max-width: 480px; background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25); border-radius: 18px; padding: 20px; text-align: center;
   }
   .lotto-box h3 { font-size: 17px; margin-bottom: 6px; }
-  .lotto-box .sub { font-size: 12px; opacity: 0.8; margin-bottom: 14px; line-height: 1.6; }
+  .lotto-box .sub { font-size: 12px; opacity: 0.9; margin-bottom: 14px; line-height: 1.6; }
   .ball-pick { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 14px; }
   .ball {
     width: 46px; height: 46px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -129,17 +168,17 @@
   .ball.hit { background: radial-gradient(circle at 35% 30%, #a6ff7c, #2ecc40); color:#083; animation: winpop 0.5s; }
 
   .bet-count { display: flex; gap: 6px; justify-content: center; margin-bottom: 12px; align-items: center; }
-  .bet-count .lbl { font-size: 12px; opacity: 0.8; margin-right: 4px; }
+  .bet-count .lbl { font-size: 12px; opacity: 0.85; margin-right: 4px; }
   .bet-count .bc {
     padding: 6px 16px; border-radius: 16px; cursor: pointer; font-size: 13px; font-weight: bold;
-    background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.2);
+    background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.3);
   }
   .bet-count .bc.active { background: linear-gradient(135deg,#ffe259,#ffa751); color:#4a2500; border-color: transparent; }
 
   .lotto-actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; margin-top: 6px; }
   .draw-result { margin-top: 14px; min-height: 48px; display: flex; flex-direction: column; gap: 6px; justify-content: center; align-items: center; max-height: 300px; overflow-y: auto; }
   .note-row { display: flex; gap: 6px; align-items: center; justify-content: center; }
-  .note-lbl { font-size: 12px; opacity: 0.75; width: 42px; text-align: right; }
+  .note-lbl { font-size: 12px; opacity: 0.8; width: 42px; text-align: right; }
   .note-tag { font-size: 12px; font-weight: bold; margin-left: 4px; min-width: 52px; text-align: left; }
   .draw-ball {
     width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
@@ -155,28 +194,30 @@
   }
 
   .result { margin-top: 18px; min-height: 28px; font-size: 19px; font-weight: bold; text-shadow: 0 1px 4px rgba(0,0,0,0.4); text-align: center; }
-  .quote { margin-top: 4px; min-height: 18px; font-size: 13px; opacity: 0.85; font-style: italic; }
+  .quote { margin-top: 4px; min-height: 18px; font-size: 13px; opacity: 0.9; font-style: italic; }
 
-  .actions { margin-top: 14px; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .actions { margin-top: 14px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
   .actions button, .lotto-actions button {
-    padding: 11px 24px; font-size: 15px; border: none; border-radius: 26px; font-weight: bold; cursor: pointer;
+    padding: 11px 22px; font-size: 15px; border: none; border-radius: 26px; font-weight: bold; cursor: pointer;
     box-shadow: 0 4px 14px rgba(0,0,0,0.3); transition: transform 0.12s, box-shadow 0.2s;
   }
   .btn-primary { background: linear-gradient(135deg,#ffe259,#ffa751); color:#4a2500; }
-  .btn-ghost { background: rgba(255,255,255,0.15); color:#fff; border:1px solid rgba(255,255,255,0.25)!important; }
+  .btn-ghost { background: rgba(255,255,255,0.2); color:#fff; border:1px solid rgba(255,255,255,0.35)!important; }
+  .btn-warn { background: linear-gradient(135deg,#ff5252,#b71c1c); color:#fff; }
   .actions button:hover:not(:disabled), .lotto-actions button:hover:not(:disabled) { transform: translateY(-2px); box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
   .actions button:disabled, .lotto-actions button:disabled { opacity: 0.4; cursor: not-allowed; }
 
-  .odds-panel { margin-top: 16px; width: 100%; max-width: 560px; background: rgba(0,0,0,0.28);
+  .odds-panel { margin-top: 16px; width: 100%; max-width: 560px; background: rgba(0,0,0,0.32);
     border-radius: 14px; max-height: 0; overflow: hidden; transition: max-height 0.4s ease; }
-  .odds-panel.open { max-height: 1400px; }
+  .odds-panel.open { max-height: 2400px; }
   .odds-inner { padding: 18px; }
   .odds-inner h3 { font-size: 15px; margin-bottom: 8px; color: var(--gold); }
   .odds-table { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 12px; }
   .odds-table th, .odds-table td { padding: 5px 8px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.12); }
   .odds-table th { color: var(--gold); }
-  .odds-note { font-size: 12px; opacity: 0.8; }
-  .odds-secret { font-size: 12.5px; color: var(--gold); margin-top: 6px; text-align: center; opacity: 0.9; }
+  .odds-note { font-size: 12px; opacity: 0.85; }
+  .odds-secret { font-size: 12.5px; color: var(--gold); margin-top: 6px; text-align: center; opacity: 0.95; }
+  .odds-warn { font-size: 13px; color:#ff8a8a; font-weight:bold; text-align:center; margin-bottom:14px; line-height:1.5; }
 
   .gameover { position: fixed; inset: 0; background: rgba(0,0,0,0.8);
     display: none; flex-direction: column; align-items: center; justify-content: center; z-index: 100; text-align: center; }
@@ -184,14 +225,21 @@
   @keyframes fade { from{opacity:0;} to{opacity:1;} }
   .gameover h2 { font-size: 42px; margin-bottom: 12px; }
   .gameover p { font-size: 18px; margin-bottom: 8px; }
-  .gameover .sub { font-size: 14px; opacity: 0.8; margin-bottom: 24px; }
+  .gameover .sub { font-size: 14px; opacity: 0.85; margin-bottom: 24px; }
 
   #confetti { position: fixed; inset: 0; pointer-events: none; z-index: 90; display:none; }
 </style>
 </head>
-<body>
-  <h1>🎰 幸运刮刮乐 & 体彩 🍀</h1>
-  <p class="tip">刮刮乐即刮即中 · 体彩选号可多注连投冲共享大奖池<br>每次投注都会为共享奖池注入资金，中头奖独得全部！</p>
+<body class="theme-candy">
+  <div class="deco" id="deco"></div>
+
+  <h1>🎰 幸运刮刮乐 · 体彩 · 老虎机 🍀</h1>
+  <p class="tip">数值卡即刮即中 · 对对碰集齐图案 · 体彩多注连投 · 老虎机三连中奖<br>每次投注都会为共享奖池注入资金，中头奖独得全部！</p>
+
+  <div class="warn-box" id="warnBox">
+    <div class="wt"></div>
+    <div class="ws">🚫 本页面为模拟娱乐 Demo，旨在提醒：赌博十赌九输，切勿沉迷。如身边有人受赌博困扰，请鼓励其寻求专业帮助。</div>
+  </div>
 
   <div class="pool">
     <div class="k">💰 共享奖池 SUPER POOL</div>
@@ -212,12 +260,14 @@
   <div class="tabs">
     <div class="tab active" data-view="scratch">🎫 刮刮乐</div>
     <div class="tab" data-view="lotto">🎱 体彩乐透</div>
+    <div class="tab" data-view="slot">🎰 老虎机</div>
   </div>
 
   <div class="view active" id="view-scratch">
     <div class="shop" id="shop"></div>
     <div class="card-wrap">
       <div class="card-inner">
+        <div class="target-bar" id="targetBar"></div>
         <div class="grid" id="grid" style="display:none;"></div>
         <div class="placeholder" id="placeholder">👆 选择上方一种刮刮乐<br>开启好运！</div>
       </div>
@@ -241,10 +291,28 @@
     </div>
   </div>
 
+  <div class="view" id="view-slot">
+    <div class="slot-box">
+      <h3>🎰 幸运老虎机</h3>
+      <p class="sub">每次转动 ￥15。三个相同图案中大奖，两个相同回本！</p>
+      <div class="reels">
+        <div class="reel" id="reel0">❓</div>
+        <div class="reel" id="reel1">❓</div>
+        <div class="reel" id="reel2">❓</div>
+      </div>
+      <div class="lotto-actions">
+        <button class="btn-primary" id="spinBtn">🎰 转动（￥15）</button>
+      </div>
+      <div class="slot-pays" id="slotPays"></div>
+    </div>
+  </div>
+
   <div class="result" id="result"></div>
   <div class="quote" id="quote"></div>
 
   <div class="actions">
+    <button class="btn-warn" id="warnBtn">🚭 戒赌宣传模式</button>
+    <button class="btn-ghost" id="themeBtn">🎨 换背景</button>
     <button class="btn-ghost" id="oddsBtn">📊 中奖概率</button>
     <button class="btn-ghost" id="soundBtn">🔊 音效：开</button>
   </div>
@@ -265,13 +333,36 @@
   // ===== 配置 =====
   const START_BALANCE = 100;
   const CARD_TYPES = [
-    { id:'low',  name:'铜卡', cost:5,  zones:6, cls:'low',  desc:'低风险 · 6奖区',
+    { id:'low',  name:'铜卡', cost:5,  zones:6, cls:'low',  type:'value', desc:'低风险 · 6奖区',
       zonePrizes:[ {m:0,weight:89},{m:0.4,weight:7},{m:1,weight:3},{m:4,weight:1} ] },
-    { id:'mid',  name:'银卡', cost:20, zones:6, cls:'mid',  desc:'中风险 · 6奖区',
+    { id:'mid',  name:'银卡', cost:20, zones:6, cls:'mid',  type:'value', desc:'中风险 · 6奖区',
       zonePrizes:[ {m:0,weight:92},{m:0.5,weight:5},{m:2,weight:2},{m:8,weight:1} ] },
-    { id:'high', name:'金卡', cost:50, zones:9, cls:'high', desc:'高风险 · 9奖区',
+    { id:'high', name:'金卡', cost:50, zones:9, cls:'high', type:'value', desc:'高风险 · 9奖区',
       zonePrizes:[ {m:0,weight:94},{m:0.5,weight:3.5},{m:3,weight:1.5},{m:15,weight:1} ] },
+    { id:'ptn',  name:'对对碰', cost:30, zones:9, cls:'pattern', type:'pattern', desc:'集齐图案 · 9奖区' },
   ];
+  const PATTERNS = [
+    { icon:'🍒', mult:1,  weight:28 },
+    { icon:'🔔', mult:2,  weight:22 },
+    { icon:'⭐', mult:3,  weight:18 },
+    { icon:'🎁', mult:5,  weight:16 },
+    { icon:'💎', mult:10, weight:10 },
+    { icon:'🍀', mult:20, weight:6  },
+  ];
+  const PATTERN_MATCH_RATE = 0.13;
+  const PATTERN_NEED = 3;
+
+  // 老虎机
+  const SLOT_COST = 15;
+  const SLOT_SYMBOLS = [
+    { icon:'🍒', w:30, x3:2  },
+    { icon:'🍋', w:26, x3:3  },
+    { icon:'🔔', w:20, x3:5  },
+    { icon:'⭐', w:14, x3:8  },
+    { icon:'💎', w:7,  x3:20 },
+    { icon:'7️⃣', w:3, x3:50 },
+  ];
+
   const BIG_PRIZE_MULT = 5;
   const HIDDEN_JACKPOT = { chance: 0.002, mult: 100 };
   const POOL_CONTRIB = 0.2;
@@ -280,24 +371,49 @@
   const WIN_QUOTES = ['手气爆棚！','欧皇附体 ✨','今天是你的幸运日！','再来亿次！','财神爷来敲门啦 💰','稳住，我们能赢！'];
   const LOSE_QUOTES = ['差一点点…','下一张就是大奖！','别灰心，运气在路上','再试一把？','非酋不哭，欧气正在充值…'];
 
+  // 戒赌模式：全局降低中奖概率（庄家优势放大）
+  const WARN_WIN_SCALE = 0.35;
+  const WARN_DECO = ['🚫','⚠️','💸','📉','😰','🔞','🆘'];
+  const WARN_MARQUEE = '⚠️ 十赌九输，越陷越深 · 庄家永远是赢家 · 珍爱生活，远离赌博 · 一夜暴富是幻觉，倾家荡产是现实 · 请理性看待这个模拟游戏 ⚠️';
+  const NORMAL_MARQUEE = '🎊 「幸运星777」体彩10注连投独揽奖池 ￥8600！ 　💗 「甜心公主」对对碰集齐 5 个🍀狂赚 ￥3000！ 　🎰 「老虎王」三连7️⃣爆奖 ￥750！ 　🔥 冲击最高纪录！';
+  const WARN_SLOGANS = [
+    '🚫 十赌九输，越赌越穷',
+    '⚠️ 小赌怡情是陷阱，大赌倾家荡产',
+    '💸 天上不会掉馅饼，庄家永远是赢家',
+    '🆘 赌博会摧毁家庭与人生，回头是岸',
+    '📉 概率永远对你不利，及时收手才是赢家',
+  ];
+
+  // 可爱背景主题
+  const THEMES = [
+    { id:'candy', name:'糖果', deco:['🍬','🍭','🧁','🍩','💗','🌸','🎀'] },
+    { id:'mint',  name:'薄荷', deco:['☁️','🌿','🍃','🦋','💚','🫧','🐚'] },
+    { id:'sky',   name:'晴空', deco:['☁️','🌈','⭐','🎈','☀️','🕊️','🌻'] },
+    { id:'night', name:'星空', deco:['⭐','🌙','✨','💫','🪐','🌟','🛸'] },
+  ];
+
   // ===== 状态 =====
   let balance=START_BALANCE, plays=0, streak=0;
   let best = Number(localStorage.getItem('scratch_best')||START_BALANCE);
   let pool = Number(localStorage.getItem('scratch_pool')||2000);
   let poolBest = Number(localStorage.getItem('scratch_pool_best')||pool);
-  let soundOn=true, currentCard=null, zones=[], settled=false, inGame=false, isDrawing=false;
+  let soundOn=true, currentCard=null, currentTarget=null, zones=[], settled=false, inGame=false, isDrawing=false;
   let picked=[], betCount=1;
+  let themeIdx = Number(localStorage.getItem('scratch_theme')||0);
+  let WARN = false;
 
   // ===== DOM =====
   const $=id=>document.getElementById(id);
   const balanceEl=$('balance'), playsEl=$('plays'), streakEl=$('streak'), bestEl=$('best');
   const poolEl=$('poolVal'), poolBestEl=$('poolBest');
-  const shopEl=$('shop'), gridEl=$('grid'), placeholderEl=$('placeholder');
+  const shopEl=$('shop'), gridEl=$('grid'), placeholderEl=$('placeholder'), targetBar=$('targetBar');
   const resultEl=$('result'), quoteEl=$('quote');
   const revealAllBtn=$('revealAllBtn'), oddsBtn=$('oddsBtn'), oddsPanel=$('oddsPanel'), oddsInner=$('oddsInner');
-  const soundBtn=$('soundBtn'), gameoverEl=$('gameover'), goTextEl=$('goText'), goSubEl=$('goSub'), restartBtn=$('restart');
-  const scratcher=$('scratcher'), confetti=$('confetti');
+  const soundBtn=$('soundBtn'), themeBtn=$('themeBtn'), warnBtn=$('warnBtn'), warnBox=$('warnBox');
+  const gameoverEl=$('gameover'), goTextEl=$('goText'), goSubEl=$('goSub'), restartBtn=$('restart');
+  const scratcher=$('scratcher'), confetti=$('confetti'), deco=$('deco'), marqueeSpan=$('marqueeText');
   const ballPick=$('ballPick'), betCountEl=$('betCount'), quickPick=$('quickPick'), drawBtn=$('drawBtn'), drawResult=$('drawResult');
+  const spinBtn=$('spinBtn'), slotPays=$('slotPays');
 
   // ===== 音效 =====
   let audioCtx=null, lastScratchSound=0;
@@ -332,6 +448,7 @@
   function playWin(){ if(!soundOn)return; ensureAudio(); beep(659.25,0,0.12,'sine',0.2); beep(880,0.12,0.15,'sine',0.2); }
   function playLose(){ if(!soundOn)return; ensureAudio(); beep(196,0,0.3,'sawtooth',0.15); }
   function playDrawTick(){ if(!soundOn)return; ensureAudio(); beep(880,0,0.06,'square',0.12); }
+  function playReelStop(){ if(!soundOn)return; ensureAudio(); beep(440,0,0.08,'square',0.16); }
 
   // ===== 共享奖池 =====
   function savePool(){ localStorage.setItem('scratch_pool', Math.round(pool)); }
@@ -359,19 +476,34 @@
     if(prevBal!==undefined && balance!==prevBal) animStat(balanceEl, balance>prevBal?'up':'down');
   }
   function afterSpend(){
-    const cheapest=Math.min(...CARD_TYPES.map(c=>c.cost), LOTTO_COST);
+    const cheapest=Math.min(...CARD_TYPES.map(c=>c.cost), LOTTO_COST, SLOT_COST);
     if(balance<cheapest) endGame();
   }
-  function pickZonePrize(card){
-    const total=card.zonePrizes.reduce((s,p)=>s+p.weight,0); let r=Math.random()*total;
-    for(const p of card.zonePrizes){ if(r<p.weight) return p; r-=p.weight; } return card.zonePrizes[0];
+  const winScale = ()=> WARN ? WARN_WIN_SCALE : 1;
+  function effZonePrizes(card){
+    return card.zonePrizes.map(p=>({ m:p.m, weight: p.m===0 ? p.weight : p.weight*winScale() }));
   }
+  function pickZonePrize(card){
+    const eff=effZonePrizes(card); const total=eff.reduce((s,p)=>s+p.weight,0);
+    let r=Math.random()*total; for(const p of eff){ if(r<p.weight) return p; r-=p.weight; } return eff[0];
+  }
+  function pickPattern(){
+    const total=PATTERNS.reduce((s,p)=>s+p.weight,0); let r=Math.random()*total;
+    for(const p of PATTERNS){ if(r<p.weight) return p; r-=p.weight; } return PATTERNS[0];
+  }
+  function pickSlot(){
+    const total=SLOT_SYMBOLS.reduce((s,p)=>s+p.w,0); let r=Math.random()*total;
+    for(const p of SLOT_SYMBOLS){ if(r<p.w) return p; r-=p.w; } return SLOT_SYMBOLS[0];
+  }
+  function rndQuote(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
   // ===== 刮刮乐 =====
   function renderShop(){
     shopEl.innerHTML='';
     CARD_TYPES.forEach(card=>{
-      const maxWin=card.cost*Math.max(...card.zonePrizes.map(p=>p.m))*card.zones;
+      let maxWin;
+      if(card.type==='pattern') maxWin=card.cost*Math.max(...PATTERNS.map(p=>p.mult))*card.zones;
+      else maxWin=card.cost*Math.max(...card.zonePrizes.map(p=>p.m))*card.zones;
       const btn=document.createElement('button');
       btn.className='card-btn '+card.cls;
       btn.innerHTML=`<div class="name">${card.name}</div><div class="cost">￥${card.cost}/张</div>
@@ -400,18 +532,39 @@
     addToPool(card.cost*POOL_CONTRIB);
     updateBar(prev); resultEl.textContent=''; quoteEl.textContent='';
     placeholderEl.style.display='none'; gridEl.style.display='grid';
+
+    const isPattern = card.type==='pattern';
+    if(isPattern){
+      currentTarget = pickPattern();
+      targetBar.style.display='flex';
+      targetBar.innerHTML=`<div class="t-label">🎯 集齐 ${PATTERN_NEED} 个及以上即中奖</div>
+        <div class="t-icon">${currentTarget.icon}</div>
+        <div class="t-mult">每个 ${currentTarget.icon} 奖 ￥${card.cost*currentTarget.mult}</div>`;
+    } else { currentTarget=null; targetBar.style.display='none'; }
+
     gridEl.innerHTML=''; zones=[];
     for(let i=0;i<card.zones;i++){
-      let value, jackpot=false;
-      if(Math.random()<HIDDEN_JACKPOT.chance){ value=card.cost*HIDDEN_JACKPOT.mult; jackpot=true; }
-      else value=Math.round(card.cost*pickZonePrize(card).m);
       const wrap=document.createElement('div'); wrap.className='zone';
       const val=document.createElement('span'); val.className='val';
-      val.textContent = jackpot ? '💎￥'+value : (value>0 ? '￥'+value : '💤');
+      let zone;
+      if(isPattern){
+        let icon;
+        if(Math.random() < PATTERN_MATCH_RATE*winScale()) icon=currentTarget.icon;
+        else { const others=PATTERNS.filter(p=>p.icon!==currentTarget.icon); icon=others[Math.floor(Math.random()*others.length)].icon; }
+        val.textContent=icon; val.style.fontSize='30px';
+        zone={pattern:icon};
+      } else {
+        let value, jackpot=false;
+        if(Math.random() < HIDDEN_JACKPOT.chance*winScale()){ value=card.cost*HIDDEN_JACKPOT.mult; jackpot=true; }
+        else value=Math.round(card.cost*pickZonePrize(card).m);
+        val.textContent = jackpot ? '💎￥'+value : (value>0 ? '￥'+value : '💤');
+        zone={value,jackpot};
+      }
       const cv=document.createElement('canvas'); cv.width=108; cv.height=76;
       const cx=cv.getContext('2d'); coatCanvas(cx,108,76);
       wrap.appendChild(val); wrap.appendChild(cv); gridEl.appendChild(wrap);
-      const zone={canvas:cv,ctx:cx,value,jackpot,revealed:false,wrap}; zones.push(zone); attachScratch(zone);
+      zone.canvas=cv; zone.ctx=cx; zone.revealed=false; zone.wrap=wrap;
+      zones.push(zone); attachScratch(zone);
     }
     revealAllBtn.disabled=false; renderShop();
   }
@@ -443,6 +596,7 @@
     zone.revealed=true;
     zone.canvas.style.transition='opacity 0.3s'; zone.canvas.style.opacity='0'; zone.canvas.style.pointerEvents='none';
     if(zone.jackpot) zone.wrap.classList.add('jackpot');
+    else if(currentCard.type==='pattern'){ if(zone.pattern===currentTarget.icon) zone.wrap.classList.add('win'); }
     else if(zone.value>0) zone.wrap.classList.add('win');
   }
   function revealZone(zone){ markRevealed(zone); if(zones.every(z=>z.revealed)) settle(); }
@@ -451,6 +605,24 @@
   function settle(){
     if(settled) return; settled=true; revealAllBtn.disabled=true;
     const prev=balance;
+    if(currentCard.type==='pattern'){
+      const matches=zones.filter(z=>z.pattern===currentTarget.icon).length;
+      const total = matches>=PATTERN_NEED ? matches*currentCard.cost*currentTarget.mult : 0;
+      balance+=total; const net=total-currentCard.cost;
+      if(total>=currentCard.cost*BIG_PRIZE_MULT){
+        resultEl.innerHTML=`🎉🎉 集齐 ${matches} 个 ${currentTarget.icon}！赢得 <span style="color:#7CFC00">￥${total}</span>（净赚 ￥${net}）`;
+        quoteEl.textContent=rndQuote(WIN_QUOTES); playBigPrize(); launchConfetti(); streak++;
+      } else if(total>0){
+        resultEl.textContent=`🎉 集齐 ${matches} 个 ${currentTarget.icon}，中奖 ￥${total}（本张净${net>=0?'赚':'亏'} ￥${Math.abs(net)}）`;
+        quoteEl.textContent = net>=0 ? rndQuote(WIN_QUOTES) : rndQuote(LOSE_QUOTES); playWin(); if(net>=0) streak++; else streak=0;
+      } else {
+        resultEl.textContent=`😢 只集到 ${matches} 个 ${currentTarget.icon}（需 ${PATTERN_NEED} 个），亏了 ￥${currentCard.cost}`;
+        quoteEl.textContent=rndQuote(LOSE_QUOTES); playLose(); streak=0;
+      }
+      updateBar(prev);
+      setTimeout(()=>{ inGame=false; renderShop(); afterSpend(); },1000);
+      return;
+    }
     let total=zones.reduce((s,z)=>s+z.value,0);
     const hasJackpot=zones.some(z=>z.jackpot);
     let poolBonus=0;
@@ -459,34 +631,32 @@
     balance+=total; const net=total-currentCard.cost;
     if(hasJackpot){
       resultEl.innerHTML=`💎💎 隐藏大奖！奖金 ￥${total-poolBonus} + 瓜分奖池 <span style="color:#ffd700">￥${poolBonus}</span> = <span style="color:#ffd700">￥${total}</span>`;
-      quoteEl.textContent='传说级欧气！截图纪念这一刻 📸';
-      playJackpot(); launchConfetti(); launchConfetti(); streak++;
+      quoteEl.textContent='传说级欧气！截图纪念这一刻 📸'; playJackpot(); launchConfetti(); launchConfetti(); streak++;
     } else if(total>=currentCard.cost*BIG_PRIZE_MULT){
       resultEl.innerHTML=`🎉🎉 大奖！累计赢得 <span style="color:#7CFC00">￥${total}</span>（净赚 ￥${net}）`;
-      quoteEl.textContent=WIN_QUOTES[Math.floor(Math.random()*WIN_QUOTES.length)];
-      playBigPrize(); launchConfetti(); streak++;
+      quoteEl.textContent=rndQuote(WIN_QUOTES); playBigPrize(); launchConfetti(); streak++;
     } else if(total>0){
       resultEl.textContent=`🎉 中奖 ￥${total}（本张净${net>=0?'赚':'亏'} ￥${Math.abs(net)}）`;
-      quoteEl.textContent = net>=0 ? WIN_QUOTES[Math.floor(Math.random()*WIN_QUOTES.length)] : LOSE_QUOTES[Math.floor(Math.random()*LOSE_QUOTES.length)];
-      playWin(); if(net>=0) streak++; else streak=0;
+      quoteEl.textContent = net>=0 ? rndQuote(WIN_QUOTES) : rndQuote(LOSE_QUOTES); playWin(); if(net>=0) streak++; else streak=0;
     } else {
       resultEl.textContent=`😢 全部落空，亏了 ￥${currentCard.cost}`;
-      quoteEl.textContent=LOSE_QUOTES[Math.floor(Math.random()*LOSE_QUOTES.length)];
-      playLose(); streak=0;
+      quoteEl.textContent=rndQuote(LOSE_QUOTES); playLose(); streak=0;
     }
     updateBar(prev);
     setTimeout(()=>{ inGame=false; renderShop(); afterSpend(); },1000);
   }
 
-  // ===== 体彩乐透（多注连投）=====
+  // ===== 体彩乐透 =====
   const LOTTO_MAX=10, LOTTO_PICK=3;
+  function genNote(){ const bag=[...Array(LOTTO_MAX)].map((_,k)=>k+1); const d=[];
+    for(let k=0;k<LOTTO_PICK;k++) d.push(bag.splice(Math.floor(Math.random()*bag.length),1)[0]); return d; }
+  function matchCount(d){ return picked.filter(n=>d.includes(n)).length; }
   function renderBalls(){
     ballPick.innerHTML='';
     for(let n=1;n<=LOTTO_MAX;n++){
       const b=document.createElement('div');
       b.className='ball'+(picked.includes(n)?' sel':'');
-      b.textContent=n;
-      b.addEventListener('click',()=>toggleBall(n));
+      b.textContent=n; b.addEventListener('click',()=>toggleBall(n));
       ballPick.appendChild(b);
     }
     refreshDrawBtn();
@@ -495,8 +665,7 @@
     betCountEl.querySelectorAll('.bc').forEach(x=>x.remove());
     BET_OPTIONS.forEach(c=>{
       const b=document.createElement('div');
-      b.className='bc'+(betCount===c?' active':'');
-      b.textContent=c+'注';
+      b.className='bc'+(betCount===c?' active':''); b.textContent=c+'注';
       b.addEventListener('click',()=>{ if(inGame&&!settled) return; betCount=c; renderBetOptions(); refreshDrawBtn(); });
       betCountEl.appendChild(b);
     });
@@ -519,7 +688,6 @@
     for(let k=0;k<LOTTO_PICK;k++) picked.push(bag.splice(Math.floor(Math.random()*bag.length),1)[0]);
     renderBalls();
   });
-
   function drawLotto(){
     const cost=LOTTO_COST*betCount;
     if(picked.length!==LOTTO_PICK || balance<cost) return;
@@ -529,17 +697,14 @@
     addToPool(cost*LOTTO_CONTRIB);
     updateBar(prev); resultEl.textContent=''; quoteEl.textContent=''; drawResult.innerHTML='';
     drawBtn.disabled=true; quickPick.disabled=true;
-
-    // 生成每一注的开奖号码
+    // 生成结果（戒赌模式下大概率把本可中奖的注改成不中）
     const notes=[];
     for(let i=0;i<betCount;i++){
-      const bag=[...Array(LOTTO_MAX)].map((_,k)=>k+1); const drawn=[];
-      for(let k=0;k<LOTTO_PICK;k++) drawn.push(bag.splice(Math.floor(Math.random()*bag.length),1)[0]);
-      notes.push(drawn);
+      let d=genNote();
+      if(WARN && matchCount(d)>=2 && Math.random()>WARN_WIN_SCALE){ do{ d=genNote(); } while(matchCount(d)>=2); }
+      notes.push(d);
     }
-
     if(betCount===1){
-      // 单注：逐球揭晓
       const drawn=notes[0];
       const row=document.createElement('div'); row.className='note-row'; drawResult.appendChild(row);
       let idx=0;
@@ -552,7 +717,6 @@
       };
       show();
     } else {
-      // 多注：逐行快速揭晓
       let i=0;
       const showRow=()=>{
         if(i<notes.length){
@@ -572,42 +736,99 @@
       showRow();
     }
   }
-
   function settleLotto(notes, prev){
-    let reward=0, hit2=0, hit3=0;
-    const everHit=new Set();
+    let reward=0, hit2=0, hit3=0; const everHit=new Set();
     notes.forEach(drawn=>{
-      const hitNums=picked.filter(n=>drawn.includes(n));
-      hitNums.forEach(n=>everHit.add(n));
+      const hitNums=picked.filter(n=>drawn.includes(n)); hitNums.forEach(n=>everHit.add(n));
       const hits=hitNums.length;
       if(hits===3){ hit3++; reward+=Math.round(pool); pool=LOTTO_POOL_MIN; savePool(); }
       else if(hits===2){ hit2++; reward+=LOTTO_COST*3; }
     });
-    renderPool();
-    balance+=reward;
-    // 高亮曾命中的选号
+    renderPool(); balance+=reward;
     [...ballPick.children].forEach(b=>{ if(everHit.has(+b.textContent)) b.classList.add('hit'); });
-
     const cost=LOTTO_COST*betCount, net=reward-cost;
     if(hit3>0){
       resultEl.innerHTML=`🎊🎊 ${hit3}注全中！独揽奖池，共得 <span style="color:#ffd700">￥${reward}</span>（净${net>=0?'赚':'亏'} ￥${Math.abs(net)}）`;
-      quoteEl.textContent='史诗级头奖！奖池已重置，快去炫耀 🏆';
-      playJackpot(); launchConfetti(); launchConfetti(); streak++;
+      quoteEl.textContent='史诗级头奖！奖池已重置，快去炫耀 🏆'; playJackpot(); launchConfetti(); launchConfetti(); streak++;
     } else if(reward>0){
       resultEl.textContent=`🎉 ${betCount}注中，${hit2}注命中2个，共得 ￥${reward}（净${net>=0?'赚':'亏'} ￥${Math.abs(net)}）`;
-      quoteEl.textContent = net>=0 ? WIN_QUOTES[Math.floor(Math.random()*WIN_QUOTES.length)] : LOSE_QUOTES[Math.floor(Math.random()*LOSE_QUOTES.length)];
-      playWin(); if(net>=0) streak++; else streak=0;
+      quoteEl.textContent = net>=0 ? rndQuote(WIN_QUOTES) : rndQuote(LOSE_QUOTES); playWin(); if(net>=0) streak++; else streak=0;
     } else {
       resultEl.textContent=`😢 ${betCount}注全部落空，亏了 ￥${cost}`;
-      quoteEl.textContent=LOSE_QUOTES[Math.floor(Math.random()*LOSE_QUOTES.length)];
-      playLose(); streak=0;
+      quoteEl.textContent=rndQuote(LOSE_QUOTES); playLose(); streak=0;
     }
     updateBar(prev);
     inGame=false; settled=true;
-    quickPick.disabled=false; renderBetOptions(); refreshDrawBtn();
-    afterSpend();
+    quickPick.disabled=false; renderBetOptions(); refreshDrawBtn(); afterSpend();
   }
   drawBtn.addEventListener('click',drawLotto);
+
+  // ===== 老虎机 =====
+  function renderSlotPays(){
+    slotPays.innerHTML = SLOT_SYMBOLS.map(s=>`${s.icon}×3=￥${SLOT_COST*s.x3}`).join(' 　');
+  }
+  function spin(){
+    if(balance<SLOT_COST || (inGame && !settled)) return;
+    ensureAudio();
+    const prev=balance;
+    balance-=SLOT_COST; plays++; inGame=true; settled=false;
+    addToPool(SLOT_COST*POOL_CONTRIB);
+    updateBar(prev); resultEl.textContent=''; quoteEl.textContent='';
+    spinBtn.disabled=true;
+
+    const res=[pickSlot(),pickSlot(),pickSlot()];
+    // 戒赌模式：本会三连时大概率破坏成不中
+    if(WARN){
+      const all3 = res[0].icon===res[1].icon && res[1].icon===res[2].icon;
+      const any2 = res[0].icon===res[1].icon || res[1].icon===res[2].icon || res[0].icon===res[2].icon;
+      if(all3 && Math.random()>WARN_WIN_SCALE){ let alt=pickSlot(); while(alt.icon===res[2].icon) alt=pickSlot(); res[2]=alt; }
+      else if(any2 && Math.random()>WARN_WIN_SCALE){ // 连两个也削弱
+        // 找出重复的那个并打散
+        if(res[0].icon===res[1].icon){ let alt=pickSlot(); while(alt.icon===res[0].icon) alt=pickSlot(); res[1]=alt; }
+        else if(res[1].icon===res[2].icon){ let alt=pickSlot(); while(alt.icon===res[1].icon) alt=pickSlot(); res[2]=alt; }
+        else { let alt=pickSlot(); while(alt.icon===res[0].icon) alt=pickSlot(); res[2]=alt; }
+      }
+    }
+
+    const reelEls=[$('reel0'),$('reel1'),$('reel2')];
+    let stopped=0;
+    reelEls.forEach((el,i)=>{
+      el.classList.add('spinning');
+      const iv=setInterval(()=>{ el.textContent=SLOT_SYMBOLS[Math.floor(Math.random()*SLOT_SYMBOLS.length)].icon; },80);
+      setTimeout(()=>{
+        clearInterval(iv); el.textContent=res[i].icon; el.classList.remove('spinning'); playReelStop();
+        stopped++;
+        if(stopped===reelEls.length) setTimeout(()=>settleSlot(res,prev),350);
+      }, 700+i*520);
+    });
+  }
+  function settleSlot(res, prev){
+    const [a,b,c]=res.map(r=>r.icon);
+    let reward=0, kind='';
+    if(a===b && b===c){ reward=SLOT_COST*res[0].x3; kind='3'; }
+    else if(a===b||b===c||a===c){ reward = WARN?0:SLOT_COST; kind='2'; }
+    balance+=reward; const net=reward-SLOT_COST;
+    if(kind==='3'){
+      if(reward>=SLOT_COST*BIG_PRIZE_MULT){
+        resultEl.innerHTML=`🎰🎉 三连 ${a}！大奖 <span style="color:#7CFC00">￥${reward}</span>（净赚 ￥${net}）`;
+        quoteEl.textContent=rndQuote(WIN_QUOTES); playBigPrize(); launchConfetti(); streak++;
+      } else {
+        resultEl.textContent=`🎰 三连 ${a}！中奖 ￥${reward}（净${net>=0?'赚':'亏'} ￥${Math.abs(net)}）`;
+        quoteEl.textContent=rndQuote(WIN_QUOTES); playWin(); if(net>=0) streak++; else streak=0;
+      }
+    } else if(reward>0){
+      resultEl.textContent=`🙂 两个相同，回本 ￥${reward}`;
+      quoteEl.textContent='差一点点，再转一次？'; playWin(); streak=0;
+    } else {
+      resultEl.textContent=`😢 未中，亏了 ￥${SLOT_COST}`;
+      quoteEl.textContent=rndQuote(LOSE_QUOTES); playLose(); streak=0;
+    }
+    updateBar(prev);
+    inGame=false; settled=true;
+    spinBtn.disabled = balance<SLOT_COST;
+    afterSpend();
+  }
+  spinBtn.addEventListener('click',spin);
 
   // ===== 结束/重开 =====
   function endGame(){
@@ -617,9 +838,10 @@
     gameoverEl.classList.add('show');
   }
   function restart(){
-    balance=START_BALANCE; plays=0; streak=0; inGame=false; settled=false; currentCard=null; zones=[]; picked=[]; betCount=1;
-    gridEl.style.display='none'; gridEl.innerHTML=''; placeholderEl.style.display='block';
+    balance=START_BALANCE; plays=0; streak=0; inGame=false; settled=false; currentCard=null; currentTarget=null; zones=[]; picked=[]; betCount=1;
+    gridEl.style.display='none'; gridEl.innerHTML=''; targetBar.style.display='none'; placeholderEl.style.display='block';
     resultEl.textContent=''; quoteEl.textContent=''; revealAllBtn.disabled=true; drawResult.innerHTML='';
+    $('reel0').textContent='❓'; $('reel1').textContent='❓'; $('reel2').textContent='❓'; spinBtn.disabled=false;
     gameoverEl.classList.remove('show'); updateBar(); renderShop(); renderBalls(); renderBetOptions();
   }
 
@@ -629,31 +851,49 @@
       if(inGame&&!settled) return;
       document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
       document.querySelectorAll('.view').forEach(x=>x.classList.remove('active'));
-      t.classList.add('active');
-      $('view-'+t.dataset.view).classList.add('active');
+      t.classList.add('active'); $('view-'+t.dataset.view).classList.add('active');
     });
   });
 
   // ===== 概率面板 =====
   function buildOdds(){
     let html='';
-    CARD_TYPES.forEach(card=>{
-      const totalW=card.zonePrizes.reduce((s,p)=>s+p.weight,0);
-      const zeroP=card.zonePrizes.find(p=>p.m===0).weight/totalW;
+    if(WARN){
+      html+=`<div class="odds-warn">⚠️ 戒赌宣传模式已开启：所有玩法中奖概率已大幅降低（庄家优势放大）。<br>这正是真实赌博的残酷——概率永远对玩家不利，十赌九输。</div>`;
+    }
+    CARD_TYPES.filter(c=>c.type==='value').forEach(card=>{
+      const eff=effZonePrizes(card);
+      const totalW=eff.reduce((s,p)=>s+p.weight,0);
+      const zeroP=eff.find(p=>p.m===0).weight/totalW;
       const allZero=Math.pow(zeroP,card.zones)*100;
       html+=`<h3>🎫 ${card.name}（￥${card.cost}，${card.zones} 奖区）</h3>`;
       html+=`<table class="odds-table"><tr><th>单区奖金</th><th>倍数</th><th>单区概率</th></tr>`;
-      card.zonePrizes.forEach(p=>{ const amt=Math.round(card.cost*p.m);
+      eff.forEach(p=>{ const amt=Math.round(card.cost*p.m);
         html+=`<tr><td>${amt>0?'￥'+amt:'未中'}</td><td>×${p.m}</td><td>${(p.weight/totalW*100).toFixed(1)}%</td></tr>`; });
       html+=`</table><div class="odds-note">整张全部落空概率约 ${allZero.toFixed(1)}% · 每区独立开奖，总奖金累加</div><br>`;
     });
+    const ptn=CARD_TYPES.find(c=>c.type==='pattern');
+    if(ptn){
+      const totalW=PATTERNS.reduce((s,p)=>s+p.weight,0);
+      html+=`<h3>💗 ${ptn.name}（￥${ptn.cost}，${ptn.zones} 奖区）</h3>`;
+      html+=`<table class="odds-table"><tr><th>图案</th><th>倍数</th><th>成为目标概率</th></tr>`;
+      PATTERNS.forEach(p=>{ html+=`<tr><td style="font-size:16px">${p.icon}</td><td>×${p.mult}</td><td>${(p.weight/totalW*100).toFixed(1)}%</td></tr>`; });
+      html+=`</table><div class="odds-note">需集齐 ${PATTERN_NEED} 个及以上目标图案才中奖（每区约 ${(PATTERN_MATCH_RATE*winScale()*100).toFixed(1)}% 出目标）</div><br>`;
+    }
     html+=`<h3>🎱 幸运乐透 · 选3（￥${LOTTO_COST}/注，支持 1/5/10 注连投）</h3>`;
     html+=`<table class="odds-table"><tr><th>单注命中</th><th>奖励</th><th>概率</th></tr>`;
-    html+=`<tr><td>3 个（头奖）</td><td>独得共享奖池</td><td>0.83%</td></tr>`;
-    html+=`<tr><td>2 个</td><td>￥${LOTTO_COST*3}</td><td>17.5%</td></tr>`;
-    html+=`<tr><td>0~1 个</td><td>未中</td><td>81.7%</td></tr>`;
-    html+=`</table><div class="odds-note">每注独立开奖，多注连投任意一注全中即得奖池 · 投注 ${LOTTO_CONTRIB*100}% 注入共享奖池</div>`;
-    html+=`<div class="odds-secret">💎 每张刮刮乐里还藏着未公开的神秘大奖，刮中可瓜分奖池 30%……👀</div>`;
+    html+=`<tr><td>3 个（头奖）</td><td>独得共享奖池</td><td>${WARN?'≈0.3%':'0.83%'}</td></tr>`;
+    html+=`<tr><td>2 个</td><td>￥${LOTTO_COST*3}</td><td>${WARN?'≈6%':'17.5%'}</td></tr>`;
+    html+=`<tr><td>0~1 个</td><td>未中</td><td>${WARN?'≈93.7%':'81.7%'}</td></tr>`;
+    html+=`</table><div class="odds-note">每注独立开奖，任意一注全中即得奖池 · 投注 ${LOTTO_CONTRIB*100}% 注入共享奖池</div><br>`;
+    // 老虎机
+    html+=`<h3>🎰 老虎机（￥${SLOT_COST}/次）</h3>`;
+    const st=SLOT_SYMBOLS.reduce((s,p)=>s+p.w,0);
+    html+=`<table class="odds-table"><tr><th>三连图案</th><th>奖金</th><th>三连概率</th></tr>`;
+    SLOT_SYMBOLS.forEach(p=>{ const pr=Math.pow(p.w/st,3)*100*winScale();
+      html+=`<tr><td>${p.icon}${p.icon}${p.icon}</td><td>￥${SLOT_COST*p.x3}</td><td>${pr.toFixed(3)}%</td></tr>`; });
+    html+=`</table><div class="odds-note">任意两个相同回本 ￥${SLOT_COST}${WARN?'（戒赌模式下取消回本）':''} · 三个相同中大奖</div>`;
+    html+=`<div class="odds-secret">💎 每张数值卡里还藏着未公开的神秘大奖，刮中可瓜分奖池 30%……👀</div>`;
     oddsInner.innerHTML=html;
   }
 
@@ -666,8 +906,7 @@
     const colors=['#ffd700','#ff6b6b','#4ecdc4','#7CFC00','#ff8cc6','#8a5cff'];
     for(let i=0;i<140;i++) confParts.push({
       x:Math.random()*innerWidth, y:-20-Math.random()*innerHeight*0.4,
-      w:6+Math.random()*8, h:8+Math.random()*10,
-      c:colors[Math.floor(Math.random()*colors.length)],
+      w:6+Math.random()*8, h:8+Math.random()*10, c:colors[Math.floor(Math.random()*colors.length)],
       vy:2+Math.random()*4, vx:-2+Math.random()*4, rot:Math.random()*6, vr:-0.2+Math.random()*0.4 });
     confEnd=performance.now()+2500;
     if(!confAnim){
@@ -682,6 +921,47 @@
       })(performance.now());
     }
   }
+
+  // ===== 背景主题 / 戒赌模式 =====
+  function buildDeco(icons){
+    deco.innerHTML='';
+    for(let i=0;i<20;i++){
+      const s=document.createElement('span');
+      s.textContent=icons[i%icons.length];
+      s.style.left=Math.random()*100+'%'; s.style.top=Math.random()*100+'%';
+      s.style.fontSize=(18+Math.random()*24)+'px';
+      s.style.animationDuration=(4+Math.random()*5)+'s'; s.style.animationDelay=(-Math.random()*6)+'s';
+      deco.appendChild(s);
+    }
+  }
+  function applyTheme(){
+    if(WARN){ document.body.className='theme-warn'; buildDeco(WARN_DECO); }
+    else {
+      const t=THEMES[themeIdx]; document.body.className='theme-'+t.id; buildDeco(t.deco);
+      themeBtn.textContent='🎨 背景：'+t.name;
+    }
+    localStorage.setItem('scratch_theme', themeIdx);
+  }
+  let warnTimer=null;
+  function updateModeText(){
+    clearInterval(warnTimer);
+    if(WARN){
+      marqueeSpan.textContent=WARN_MARQUEE;
+      let i=0; const wt=warnBox.querySelector('.wt');
+      const show=()=>{ wt.textContent=WARN_SLOGANS[i%WARN_SLOGANS.length]; i++; };
+      show(); warnTimer=setInterval(show,3200);
+    } else {
+      marqueeSpan.textContent=NORMAL_MARQUEE;
+    }
+  }
+  themeBtn.addEventListener('click',()=>{ if(WARN) return; themeIdx=(themeIdx+1)%THEMES.length; applyTheme(); });
+  warnBtn.addEventListener('click',()=>{
+    WARN=!WARN;
+    warnBtn.textContent = WARN ? '🎀 返回可爱模式' : '🚭 戒赌宣传模式';
+    themeBtn.disabled = WARN;
+    warnBox.classList.toggle('show', WARN);
+    applyTheme(); updateModeText(); buildOdds();
+  });
 
   // ===== 跟随刮刀 =====
   addEventListener('mousemove',e=>{
@@ -702,10 +982,10 @@
   restartBtn.addEventListener('click',restart);
   addEventListener('mouseup',()=>{isDrawing=false;});
 
-  $('marqueeText').textContent='🎊 恭喜「幸运星777」体彩10注连投全中独揽奖池 ￥8600！ 　💎 「欧皇001」刮中隐藏大奖！ 　🍀 共享奖池持续飙升中！ 　🔥 冲击最高纪录！';
-
   // 初始化
-  renderPool(); updateBar(); renderShop(); renderBalls(); renderBetOptions(); buildOdds();
+  if(themeIdx<0||themeIdx>=THEMES.length) themeIdx=0;
+  applyTheme(); updateModeText(); renderPool(); updateBar();
+  renderShop(); renderBalls(); renderBetOptions(); renderSlotPays(); buildOdds();
 </script>
 </body>
 </html>
